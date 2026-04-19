@@ -1128,10 +1128,7 @@ function S8({ go }) {
               <span style={{ fontSize: 12, color: C.safe }}>Live feed · Encrypted</span>
             </div>
           </div>
-          <SurfaceCard style={{ background: C.safeBg }}>
-            <Label text="ALL CLEAR" />
-            <div style={{ fontSize: 13, color: C.textSecondary, marginTop: 6 }}>No inappropriate content · Calm environment · Arjun appears comfortable</div>
-          </SurfaceCard>
+
           <Card>
             <Label text="CARETAKER MESSAGE FROM RAMESH" />
             <div style={{ background: C.surface, borderRadius: 8, padding: '12px 14px', marginTop: 10 }}>
