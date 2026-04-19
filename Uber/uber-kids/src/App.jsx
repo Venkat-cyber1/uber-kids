@@ -944,7 +944,10 @@ function S5({ go, openCall, openChat, openSupport, toast }) {
         </div>
         <div style={{ height: 100 }} />
       </div>
-      <BottomBar><PrimaryBtn label="Track Arjun's ride" onClick={() => go('S6')} /></BottomBar>
+      <BottomBar>
+        <PrimaryBtn label="Track Arjun's ride" onClick={() => go('S6')} />
+        <SecondaryBtn label="Cancel Ride" onClick={() => { if (window.confirm('Are you sure you want to cancel this ride?')) { toast('Ride cancelled. You will not be charged.'); go('S3'); } }} />
+      </BottomBar>
     </div>
   );
 }
