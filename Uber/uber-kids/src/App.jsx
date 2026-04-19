@@ -792,17 +792,7 @@ function S4({ go }) {
               <Clock size={16} color={C.textTertiary} /><span style={{ fontSize: 14 }}>5:30 PM</span>
             </div>
           </div>
-          <Card>
-            <Label text="RIDE TYPE" />
-            <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-              {['One-time','Recurring'].map(t => <Chip key={t} label={t} selected={rideType===t} onClick={() => setRideType(t)} />)}
-            </div>
-            {rideType === 'Recurring' && (
-              <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
-                {['Mon','Tue','Wed','Thu','Fri','Sat'].map(d => <Chip key={d} label={d} selected={days.includes(d)} onClick={() => toggleDay(d)} />)}
-              </div>
-            )}
-          </Card>
+
           <Card>
             <Label text="DRIVER PREFERENCE" />
             <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
@@ -1441,7 +1431,6 @@ function S14({ go }) {
                 <div style={{ flex: 1, display: 'flex' }}>
                   {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize: 12, color: '#F59E0B' }}>★</span>)}
                 </div>
-                <button onClick={() => go('S4')} style={{ background: C.white, border: `1.5px solid ${C.black}`, borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>Rebook</button>
               </div>
             </Card>
           ))}
