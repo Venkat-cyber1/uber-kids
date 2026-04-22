@@ -862,10 +862,8 @@ function S4({ go }) {
 
 // ─── S4E Emergency Booking ────────────────────────────────────────────────────
 function S4E({ go }) {
-  const [driverPref, setDriverPref] = useState('Any caretaker');
   const [payment, setPayment] = useState('UPI');
   const [swapped, setSwapped] = useState(false);
-  const [driverIdx, setDriverIdx] = useState(0);
   const [selectedAdults, setSelectedAdults] = useState([0]);
   const toggleAdult = i => setSelectedAdults(p => p.includes(i) ? p.filter(x => x !== i) : [...p, i]);
 
@@ -907,21 +905,6 @@ function S4E({ go }) {
             </div>
           </Card>
 
-          {/* No date/time row — ride is now */}
-          <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 8, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Clock size={15} color="#16A34A" />
-            <span style={{ fontSize: 13, color: '#166534', fontWeight: 500 }}>Ride requested for right now</span>
-          </div>
-
-          <Card>
-            <Label text="DRIVER PREFERENCE" />
-            <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
-              {['Any caretaker','Women driver only'].map(p => <Chip key={p} label={p} selected={driverPref===p} onClick={() => setDriverPref(p)} />)}
-            </div>
-          </Card>
-          <Card style={{ overflow: 'hidden' }}>
-            <DriverCarousel selected={driverIdx} onSelect={setDriverIdx} />
-          </Card>
           <Card>
             <Label text="DROPOFF NOTIFICATION" />
             <div style={{ fontSize: 12, color: C.textSecondary, marginTop: 4, marginBottom: 12 }}>Select trusted adults who'll receive driver info & OTP</div>
