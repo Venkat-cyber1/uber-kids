@@ -671,7 +671,7 @@ function S3({ go }) {
             Schedule a ride
           </button>
           <div style={{ textAlign: 'center', marginTop: 10 }}>
-            <button onClick={() => go('S4')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'rgba(255,255,255,0.55)', fontFamily: 'DM Sans, sans-serif' }}>
+            <button onClick={() => go('S4E')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'rgba(255,255,255,0.55)', fontFamily: 'DM Sans, sans-serif' }}>
               ⚡ Need a ride right now? <span style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'underline' }}>Book now</span>
             </button>
           </div>
@@ -856,6 +856,126 @@ function S4({ go }) {
         <div style={{ height: 100 }} />
       </div>
       <BottomBar><PrimaryBtn label="Confirm booking · ₹480" onClick={() => go('S5')} /></BottomBar>
+    </div>
+  );
+}
+
+// ─── S4E Emergency Booking ────────────────────────────────────────────────────
+function S4E({ go }) {
+  const [driverPref, setDriverPref] = useState('Any caretaker');
+  const [payment, setPayment] = useState('UPI');
+  const [swapped, setSwapped] = useState(false);
+  const [driverIdx, setDriverIdx] = useState(0);
+  const [selectedAdults, setSelectedAdults] = useState([0]);
+  const toggleAdult = i => setSelectedAdults(p => p.includes(i) ? p.filter(x => x !== i) : [...p, i]);
+
+  const pickup = swapped ? 'Football Ground · Lokhandwala' : 'Home · Andheri West';
+  const dropoff = swapped ? 'Home · Andheri West' : 'Football Ground · Lokhandwala';
+
+  return (
+    <div className="screen-enter" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'hidden' }}>
+      <StatusBar />
+      <NavBar title="Emergency ride for Arjun" onBack={() => go('S3')} />
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+
+          {/* Availability warning */}
+          <div style={{ background: '#FFF8EC', border: '1px solid #F59E0B', borderRadius: 10, padding: '12px 14px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+            <AlertTriangle size={18} color="#D97706" style={{ flexShrink: 0, marginTop: 1 }} />
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#92400E' }}>Subject to caretaker availability</div>
+              <div style={{ fontSize: 12, color: '#92400E', marginTop: 3, lineHeight: 1.5 }}>
+                Emergency rides are matched in real time with the nearest available verified caretaker. Booking is not guaranteed and may take longer during peak hours.
+              </div>
+            </div>
+          </div>
+
+          <Card>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: C.safe }} />
+                <div style={{ borderLeft: `2px dashed ${C.textTertiary}`, height: 28 }} />
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: C.black }} />
+              </div>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ background: C.surface, borderRadius: 8, height: 48, padding: '0 14px', fontSize: 14, display: 'flex', alignItems: 'center' }}>{pickup}</div>
+                <div style={{ background: C.surface, borderRadius: 8, height: 48, padding: '0 14px', fontSize: 14, display: 'flex', alignItems: 'center' }}>{dropoff}</div>
+              </div>
+              <button onClick={() => setSwapped(s => !s)} style={{ background: C.surface, border: 'none', borderRadius: 6, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <ArrowUpDown size={16} />
+              </button>
+            </div>
+          </Card>
+
+          {/* No date/time row — ride is now */}
+          <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 8, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Clock size={15} color="#16A34A" />
+            <span style={{ fontSize: 13, color: '#166534', fontWeight: 500 }}>Ride requested for right now</span>
+          </div>
+
+          <Card>
+            <Label text="DRIVER PREFERENCE" />
+            <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
+              {['Any caretaker','Women driver only'].map(p => <Chip key={p} label={p} selected={driverPref===p} onClick={() => setDriverPref(p)} />)}
+            </div>
+          </Card>
+          <Card style={{ overflow: 'hidden' }}>
+            <DriverCarousel selected={driverIdx} onSelect={setDriverIdx} />
+          </Card>
+          <Card>
+            <Label text="DROPOFF NOTIFICATION" />
+            <div style={{ fontSize: 12, color: C.textSecondary, marginTop: 4, marginBottom: 12 }}>Select trusted adults who'll receive driver info & OTP</div>
+            {TRUSTED_ADULTS.map((a, i) => (
+              <div key={i}>
+                {i > 0 && <Divider />}
+                <button onClick={() => toggleAdult(i)} style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0', textAlign: 'left' }}>
+                  <Avatar letter={a.letter} size={36} bg={selectedAdults.includes(i) ? C.black : C.surface} color={selectedAdults.includes(i) ? C.white : C.black} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 14, fontWeight: 500 }}>{a.name}</div>
+                    <div style={{ fontSize: 12, color: C.textSecondary }}>{a.role}</div>
+                  </div>
+                  <div style={{ width: 22, height: 22, borderRadius: 6, border: `2px solid ${selectedAdults.includes(i) ? C.black : C.surfaceDark}`, background: selectedAdults.includes(i) ? C.black : C.white, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {selectedAdults.includes(i) && <span style={{ color: C.white, fontSize: 13, fontWeight: 700 }}>✓</span>}
+                  </div>
+                </button>
+              </div>
+            ))}
+            <div style={{ marginTop: 12 }}>
+              <SecondaryBtn label="+ Add trusted adult" onClick={() => {}} />
+            </div>
+          </Card>
+          <Card>
+            <Label text="FARE BREAKDOWN" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 12 }}>
+              {[['Base fare','₹120'],['Distance 6.2 km','₹186'],['Caretaker premium','₹174'],['Emergency surge (1.2×)','₹57']].map(([l,v]) => (
+                <div key={l} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 14, color: C.textSecondary }}>{l}</span>
+                  <span style={{ fontSize: 14 }}>{v}</span>
+                </div>
+              ))}
+              <Divider />
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 16, fontWeight: 700 }}>Total</span>
+                <span style={{ fontSize: 18, fontWeight: 700 }}>₹537</span>
+              </div>
+              <div style={{ fontSize: 11, color: C.textTertiary }}>Emergency surge applies when requesting an unscheduled ride. Final fare confirmed on match.</div>
+            </div>
+          </Card>
+          <Card>
+            <Label text="PAYMENT" />
+            <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
+              {['UPI','Card','Paytm','PhonePe'].map(p => <Chip key={p} label={p} selected={payment===p} onClick={() => setPayment(p)} />)}
+            </div>
+            {payment === 'UPI' && (
+              <div style={{ marginTop: 10 }}>
+                <input readOnly value="priya.sharma@upi" style={{ width: '100%', background: C.surface, border: 'none', borderRadius: 8, height: 44, padding: '0 14px', fontSize: 13, fontFamily: 'DM Sans, sans-serif', boxSizing: 'border-box' }} />
+              </div>
+            )}
+          </Card>
+        </div>
+        <div style={{ height: 100 }} />
+      </div>
+      <BottomBar><PrimaryBtn label="Request emergency ride · ₹537" onClick={() => go('S5')} /></BottomBar>
     </div>
   );
 }
@@ -1530,7 +1650,7 @@ function S15({ go, toast }) {
 function DemoPanel({ current, go }) {
   const groups = [
     { label: 'Onboarding', items: [['S0','Splash'],['SL','Login'],['S1','Account'],['S2','Child Profile'],['S15','My Account']] },
-    { label: 'Core', items: [['S3','Home'],['S4','Booking'],['S5','Pre-Ride']] },
+    { label: 'Core', items: [['S3','Home'],['S4','Booking'],['S4E','Emergency'],['S5','Pre-Ride']] },
     { label: 'Live Ride', items: [['S6','Live'],['S7','Video'],['S8','Monitor'],['S9','Deviation'],['S10','SOS']] },
     { label: 'Handover', items: [['S11','Drop-off'],['S12','Arrival'],['S13','Rating'],['S14','Past Rides']] },
   ];
@@ -1576,7 +1696,7 @@ export default function App() {
     toastTimer.current = setTimeout(() => setToastMsg(null), 2400);
   }, []);
 
-  const screens = { S0, SL, S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15 };
+  const screens = { S0, SL, S1, S2, S3, S4, S4E, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15 };
   const Screen = screens[screen];
   const actions = { go, openCall, openChat, openSupport, toast };
 
